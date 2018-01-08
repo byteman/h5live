@@ -19,7 +19,7 @@
 # 整体架构
 
  ![h5整体架构](https://github.com/byteman/h5live/raw/master/doc/h5整体架构.png )
- ![h5live内部实现](https://github.com/byteman/h5live/raw/master/doc/h5内部架构.png )
+ ![h5live内部实现](https://github.com/byteman/h5live/raw/master/doc/h5live内部架构.png )
 
 # 服务端编译说明
 
