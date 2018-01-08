@@ -16,6 +16,10 @@
 * 2.后台服务器提供一个websocket服务器，将h264视频流推送给H5播放器，H5播放器(flv.js)封装264为mp4，进行播放，需要修改flv.js源码
 * 3.先采用方案1.
 
+# 整体架构
+
+ ![h5整体架构](https://github.com/byteman/h5live/raw/master/doc/h5整体架构.png )
+ ![h5live内部实现](https://github.com/byteman/h5live/raw/master/doc/h5内部架构.png )
 
 # 服务端编译说明
 
