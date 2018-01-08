@@ -1,0 +1,11 @@
+*.user
+*.obj
+*.exe
+*.res
+Makefile
+Makefile.Release
+Makefile.Debug
+*.manifest
+*.pdb
+*.ilk
+*.rc
