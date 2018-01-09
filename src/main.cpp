@@ -5,6 +5,7 @@
 #include "streamchannel.h"
 #include "CWHttpServer.h"
 #include "CWWebSocketServer.h"
+#include "Poco/LocalDateTime.h"
 using namespace std;
 using namespace cv;
 
@@ -51,6 +52,8 @@ int main()
     printf("h5live demo start!\n");
     printf("captrue w=%d,h=%d fps=%d\n",w,h,fps);
     _bExit = false;
+    CvFont font_face;
+    cvInitFont(&font_face, CV_FONT_HERSHEY_SIMPLEX|CV_FONT_ITALIC,1.0,1.0,0,1);
     while(!_bExit)
     {
         Mat frame;
@@ -64,6 +67,11 @@ int main()
             vb.size = vb.w*vb.h*3;
             strcpy(vb.id,"12345");
             vb.format = SS_PT_BGR;
+            Poco::LocalDateTime ldt;
+            std::string date = Poco::format("%04d-%02d-%02d %02d:%02d:%02d",ldt.year(),ldt.month(),ldt.day(),ldt.hour(),ldt.minute(),ldt.second());
+            IplImage img(frame);
+            cvPutText(&img, date.c_str(), cvPoint(10,30), &font_face, cv::Scalar(0, 255, 0));
+
             PusherManager::get().pushFrame(&vb);
         }
         else
