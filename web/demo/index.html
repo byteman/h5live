@@ -68,6 +68,7 @@
             <button onclick="flv_destroy()">Destroy</button>
             <input style="width:100px" type="text" name="seekpoint"/>
             <button onclick="flv_seekto()">SeekTo</button>
+			<button onclick="flv_seektoend()">SeekToEnd</button>
         </div>
         <textarea name="logcatbox" class="logcatBox" rows="10" readonly></textarea>
     </div>
@@ -82,6 +83,7 @@
                 isLive: true,
                 //cors: true,
                 hasAudio: false,
+				autoCleanupSourceBuffer:true,
                 //url: 'http://flvdl7524d1f2.live.126.net/live/a27c2e6c29c84112a3552d2ae37c7ae4.flv?netease=flvdl7524d1f2.live.126.net'
                 url: 'ws://' + location.host + '/12345',
                 //url: 'http://localhost:8080/demo/test.flv'
@@ -130,7 +132,12 @@
             var input = document.getElementsByName('seekpoint')[0];
             player.currentTime = parseFloat(input.value);
         }
-
+		function flv_seektoend()
+		{
+			console.log("seek to end", player.buffered.end(0));
+			player.currentTime = player.buffered.end(0)-0.01;
+			
+		}
         function getUrlParam(key, defaultValue) {
             var pageUrl = window.location.search.substring(1);
             var pairs = pageUrl.split('&');
@@ -154,8 +161,23 @@
         });
 
         document.addEventListener('DOMContentLoaded', function () {
+			console.log("tab load");
             flv_load();
+			flv_start();
         });
+		
+		document.addEventListener('visibilitychange',function(){
+			if(document.visibilityState=='hidden') {     
+				console.log("hidden");
+				
+			}else {
+				console.log("show");
+				
+				flv_start();
+				flv_seektoend();
+			}
+  });
+  
     </script>
     
 </body>
