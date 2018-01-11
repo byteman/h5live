@@ -68,7 +68,7 @@ int main()
             strcpy(vb.id,"12345");
             vb.format = SS_PT_BGR;
             Poco::LocalDateTime ldt;
-            std::string date = Poco::format("%04d-%02d-%02d %02d:%02d:%02d",ldt.year(),ldt.month(),ldt.day(),ldt.hour(),ldt.minute(),ldt.second());
+            std::string date = Poco::format("%04d-%02d-%02d %02d:%02d:%02d.%03d",ldt.year(),ldt.month(),ldt.day(),ldt.hour(),ldt.minute(),ldt.second(),ldt.millisecond());
             IplImage img(frame);
             cvPutText(&img, date.c_str(), cvPoint(10,30), &font_face, cv::Scalar(0, 255, 0));
 
