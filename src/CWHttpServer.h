@@ -38,7 +38,7 @@ public:
 	~CWHttpServer(void);
 
 public:
-	void start(std::string path, int port);
+    bool start(std::string path, int port);
 	void stop();
 	void setPort(int num);
 	void setWebDir(std::string path);

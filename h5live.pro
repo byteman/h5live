@@ -29,7 +29,9 @@ SOURCES += src/main.cpp \
     src/CWRequestHandlerFactory.cpp \
     src/CWRequestHandler.cpp \
     src/mediatype.cpp \
-    src/MediaTypeMapper.cpp
+    src/MediaTypeMapper.cpp \
+    src/h5liveserver.cpp \
+    src/h5liveserver.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -54,5 +56,7 @@ HEADERS += \
     src/CWRequestHandlerFactory.h \
     src/CWRequestHandler.h \
     src/mediatype.h \
-    src/MediaTypeMapper.h
+    src/MediaTypeMapper.h \
+    src/h5liveserver.h \
+    src/h5liveserver.h
 

@@ -8,8 +8,8 @@ class StreamChannel
 {
 public:
     StreamChannel();
-    int open(int port);
-    int close();
+    ~StreamChannel();
+
     int push(Poco::UInt8* data, int size,Poco::Int64 pts=0);
     int flush();
     void run();
@@ -17,6 +17,8 @@ public:
 
     void onWebSocketConnected(const void *pSender, Poco::Net::WebSocket*& socket);
 private:
+    int open();
+    int close();
     FlvMuxer _muxer;
 
     Poco::Activity<StreamChannel> _activity;

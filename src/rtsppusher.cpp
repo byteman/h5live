@@ -2,7 +2,7 @@
 #include "Poco/URI.h"
 #include <stdio.h>
 #include "CWLogger.h"
-
+#include "h5liveserver.h"
 
 RtspPusher::RtspPusher():
     _quit(true),
@@ -16,6 +16,11 @@ RtspPusher::RtspPusher():
 RtspPusher::~RtspPusher()
 {
     disconect();
+}
+
+void RtspPusher::setId(std::string id)
+{
+    _id = id;
 }
 
 bool RtspPusher::setURL(std::string host, int port, std::string stream, std::string user, std::string pass)
@@ -33,7 +38,7 @@ bool RtspPusher::setURL(std::string url)
 {
     try
     {
-        _channel.open(8000);
+
         Poco::URI uri(url);
         std::string scheme = uri.getScheme();
         std::string host = uri.getHost();
@@ -63,8 +68,8 @@ bool RtspPusher::equal(std::string url)
 
 bool RtspPusher::setPpsSps(std::vector<unsigned char> &sps, std::vector<unsigned char> &pps)
 {
-    _channel.push(sps.data(), sps.size());
-    _channel.push(pps.data(), pps.size());
+    H5liveServer::get().push264(_id, sps.data(), sps.size(),0);
+    H5liveServer::get().push264(_id, pps.data(), pps.size(),0);
     return true;
 }
 
@@ -84,10 +89,10 @@ int RtspPusher::disconect()
     return 0;
 }
 //mux flv and cache gop
-int RtspPusher::pushVideo(unsigned char *raw_h264, int size,int64_t pts,bool keyframe)
+int RtspPusher::pushVideo(unsigned char *raw_h264, int size,long long pts,bool keyframe)
 {
 
-   _channel.push(raw_h264, size,pts);
+   H5liveServer::get().push264(_id,raw_h264, size,pts);
 
    return 0;
 }

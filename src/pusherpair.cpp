@@ -7,7 +7,7 @@ PusherPair::PusherPair(std::string id):
     _id(id),
     _started(false)
 {
-
+    _pusher.setId(id);
 }
 
 int PusherPair::init(std::string url,int codec, int dw, int dh, int fps,int bitrate, int gop,bool redirect)

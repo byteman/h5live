@@ -44,29 +44,38 @@ bool CWHttpServer::registerURI(std::string uri,Poco::AbstractInstantiator<HTTPRe
     return false;
 }
 
-void CWHttpServer::start(std::string path, int port)
+bool CWHttpServer::start(std::string path, int port)
 {
-	setPort(port);
-	setWebDir(path);
+    try
+    {
+        setPort(port);
+        setWebDir(path);
 
-    cw_info("HttpServerModuleImpl start \r\n");
-    m_factory->setPath(path);
-    std::string mime_path = Poco::Path::current ()+"mime.types";
-    _media.load(mime_path);
+        cw_info("HttpServerModuleImpl start \r\n");
+        m_factory->setPath(path);
+        std::string mime_path = Poco::Path::current ()+"mime.types";
+        _media.load(mime_path);
 
-	svs=new ServerSocket(m_nPort);
+        svs=new ServerSocket(m_nPort);
 
-	Poco::Net::HTTPServerParams *pParams = new Poco::Net::HTTPServerParams();
+        Poco::Net::HTTPServerParams *pParams = new Poco::Net::HTTPServerParams();
 
-	pParams->setMaxQueued(100);
-	pParams->setMaxThreads(16);
-    pParams->setKeepAlive(true);
-    pParams->setKeepAliveTimeout(Poco::Timespan(10,0));
-    pParams->setMaxKeepAliveRequests(100);
+        pParams->setMaxQueued(100);
+        pParams->setMaxThreads(16);
+        pParams->setKeepAlive(true);
+        pParams->setKeepAliveTimeout(Poco::Timespan(10,0));
+        pParams->setMaxKeepAliveRequests(100);
 
-    srv = new HTTPServer(m_factory, *svs, pParams);
+        srv = new HTTPServer(m_factory, *svs, pParams);
 
-	srv->start();
+        srv->start();
+    }
+    catch(Poco::Exception& e)
+    {
+        cw_error("Start HttpServer %s ",e.displayText().c_str());
+        return false;
+    }
+    return true;
 	cw_info("CWHttpServer start ok\r\n");
 }
 

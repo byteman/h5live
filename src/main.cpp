@@ -3,8 +3,7 @@
 #include "opencv2/opencv.hpp"
 #include "ffconfig.h"
 #include "streamchannel.h"
-#include "CWHttpServer.h"
-#include "CWWebSocketServer.h"
+#include "h5liveserver.h"
 #include "Poco/LocalDateTime.h"
 using namespace std;
 using namespace cv;
@@ -32,18 +31,16 @@ void waitForTerminationRequest()
 }
 int main()
 {
-    CWHttpServer srv;
+
+    std::string live = "12345";
     std::string root = Poco::Path::current() + "/web";
-
-    srv.registerURI("/websocket", new Poco::Instantiator<WebSocketRequestHandler,Poco::Net::HTTPRequestHandler>());
-
-    srv.start(root, 8000);
-
+    H5liveServer::get().start(root, 8000);
+    H5liveServer::get().addStream(live);
     PusherManager::PusherPara para;
     para._redirect = false;
     para._bitrate  = 1000000;
     para._gop = 5;
-    PusherManager::get().addStream("12345","url",para);
+    PusherManager::get().addStream(live,"url",para);
     VideoCapture capture;
     capture.open(0);
     int h   = capture.get(CV_CAP_PROP_FRAME_HEIGHT);
@@ -65,7 +62,7 @@ int main()
             vb.w = frame.cols;
             vb.h = frame.rows;
             vb.size = vb.w*vb.h*3;
-            strcpy(vb.id,"12345");
+            strcpy(vb.id,live.c_str());
             vb.format = SS_PT_BGR;
             Poco::LocalDateTime ldt;
             std::string date = Poco::format("%04d-%02d-%02d %02d:%02d:%02d.%03d",ldt.year(),ldt.month(),ldt.day(),ldt.hour(),ldt.minute(),ldt.second(),ldt.millisecond());

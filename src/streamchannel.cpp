@@ -4,10 +4,15 @@
 StreamChannel::StreamChannel():
     _activity(this, &StreamChannel::run)
 {
-
+    open();
 }
 
-int StreamChannel::open(int port)
+StreamChannel::~StreamChannel()
+{
+    close();
+}
+
+int StreamChannel::open()
 {
 
     WebSocketSvrImpl::instance().onConnect += Poco::delegate(this, &StreamChannel::onWebSocketConnected);
@@ -20,6 +25,10 @@ int StreamChannel::open(int port)
 
 int StreamChannel::close()
 {
+    WebSocketSvrImpl::instance().onConnect -= Poco::delegate(this, &StreamChannel::onWebSocketConnected);
+
+    _activity.stop();
+    _activity.wait();
     return 0;
 }
 

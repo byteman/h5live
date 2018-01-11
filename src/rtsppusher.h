@@ -7,12 +7,13 @@
 #include "dataqueue.h"
 #include <map>
 #include <queue>
-#include "streamchannel.h"
+
 class RtspPusher
 {
 public:
     RtspPusher();
     virtual ~RtspPusher();
+    void setId(std::string id);
     bool setURL(std::string host,int port,std::string stream,std::string user, std::string pass);
     bool setURL(std::string url);
     bool equal(std::string url);
@@ -21,7 +22,7 @@ public:
     int  disconect();
     std::string getURL(){return _url;}
     Poco::BasicEvent<int> event;
-    int pushVideo(unsigned char *raw_h264, int size,int64_t pts,bool keyframe);
+    int pushVideo(unsigned char *raw_h264, int size,long long pts,bool keyframe);
 
     bool addReader(std::string key);
     bool waitPacket(std::string key, Packet& pkt,int timeout);
@@ -42,7 +43,7 @@ private:
     DataQueue<Packet> _queue;
     std::vector<Packet> _gop_queue;
     int timestamp;
-    StreamChannel _channel;
+
 
 };
 
