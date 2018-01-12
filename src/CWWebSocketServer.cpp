@@ -43,8 +43,8 @@ int WebSocketSvrImpl::addWebSocket(HTTPServerRequest& request, HTTPServerRespons
     try
     {
         WebSocket* ws = new WebSocket(request, response);
-		Poco::Timespan sendTimeOut(300);
-		ws->setSendTimeout(sendTimeOut);
+        Poco::Timespan sendTimeOut(300);
+        ws->setSendTimeout(sendTimeOut);
         Poco::FastMutex::ScopedLock lock(m_mutex);
         std::map< std::string, std::vector<WebSocket*> >::iterator it = m_wsMaps.find(cameraid);
         if(it != m_wsMaps.end())

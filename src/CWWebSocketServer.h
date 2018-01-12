@@ -13,10 +13,6 @@
 #include "Poco/Net/ServerSocket.h"
 #include "Poco/Net/WebSocket.h"
 #include "Poco/Net/NetException.h"
-#include "Poco/Util/ServerApplication.h"
-#include "Poco/Util/Option.h"
-#include "Poco/Util/OptionSet.h"
-#include "Poco/Util/HelpFormatter.h"
 #include "Poco/DynamicFactory.h"
 #include "Poco/Format.h"
 #include "CWLogger.h"
@@ -35,11 +31,6 @@ using Poco::Net::HTTPServerResponse;
 using Poco::Net::HTTPServerParams;
 using Poco::Timestamp;
 using Poco::ThreadPool;
-using Poco::Util::ServerApplication;
-using Poco::Util::Application;
-using Poco::Util::Option;
-using Poco::Util::OptionSet;
-using Poco::Util::HelpFormatter;
 
 class WebSocketSvrImpl/* : public Poco::Runnable*/
 {

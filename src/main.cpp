@@ -5,6 +5,8 @@
 #include "streamchannel.h"
 #include "h5liveserver.h"
 #include "Poco/LocalDateTime.h"
+#include "Poco/Path.h"
+#include "CWLogger.h"
 using namespace std;
 using namespace cv;
 

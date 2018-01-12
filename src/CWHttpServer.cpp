@@ -4,11 +4,8 @@
 #include "CWLogger.h"
 #include "CWRequestHandlerFactory.h"
 #include "Poco/FileStream.h"
+#include "Poco/Path.h"
 using namespace Poco::Dynamic;
-using Poco::Util::AbstractConfiguration;
-
-
-
 
 CWHttpServer::CWHttpServer(void):
     m_factory(NULL)

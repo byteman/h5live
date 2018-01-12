@@ -5,13 +5,13 @@
 #include "Poco/Net/HTTPServerRequest.h"
 #include "Poco/Net/HTTPServerResponse.h"
 #include "Poco/Net/HTTPRequestHandler.h"
-#include "Poco/Util/ServerApplication.h"
+
 
 
 using Poco::Net::HTTPServerRequest;
 using Poco::Net::HTTPServerResponse;
 using Poco::Net::HTTPRequestHandler;
-using Poco::Util::Application;
+
 
 class CWRequestHandler : public HTTPRequestHandler
 {
@@ -28,7 +28,8 @@ private:
 	std::string m_website_path;
 	std::string m_index_path;
 	std::string m_error_path;
-	
+
+    int sendError(HTTPServerResponse &response);
 };
 
 #endif

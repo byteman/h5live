@@ -11,11 +11,6 @@
 #include "Poco/Net/HTTPServerParams.h"
 #include "Poco/Net/PartHandler.h"
 #include "Poco/Net/MessageHeader.h"
-
-#include "Poco/Util/ServerApplication.h"
-#include "Poco/Util/Option.h"
-#include "Poco/Util/OptionSet.h"
-#include "Poco/Util/HelpFormatter.h"
 #include "Poco/String.h"
 
 #include <iostream>

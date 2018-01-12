@@ -83,11 +83,20 @@ LOG_API int     log_read(std::string& msg);
 #define   cw_warn(...)   log_printf(LOG_PRIO_WARNING,  __VA_ARGS__)
 #define   cw_error(...)  log_printf(LOG_PRIO_ERROR,  __VA_ARGS__)
 #define   cw_fatal(...)  log_printf(LOG_PRIO_FATAL,  __VA_ARGS__)
+#elif defined(ANDROID)
+#include "jnihelper/JniHelpersCommon.h"
+#define   cw_trace(...) __android_log_print(ANDROID_LOG_ERROR, LOGGING_TAG, __VA_ARGS__)
+#define   cw_debug(...) __android_log_print(ANDROID_LOG_ERROR, LOGGING_TAG, __VA_ARGS__)
+#define   cw_info(...) __android_log_print(ANDROID_LOG_ERROR, LOGGING_TAG, __VA_ARGS__)
+#define   cw_notice(...) __android_log_print(ANDROID_LOG_ERROR, LOGGING_TAG, __VA_ARGS__)
+#define   cw_warn(...) __android_log_print(ANDROID_LOG_ERROR, LOGGING_TAG, __VA_ARGS__)
+#define   cw_error(...) __android_log_print(ANDROID_LOG_ERROR, LOGGING_TAG, __VA_ARGS__)
+#define   cw_fatal(...) __android_log_print(ANDROID_LOG_ERROR, LOGGING_TAG, __VA_ARGS__)
 #else
 #define   cw_trace(...) printf
 #define   cw_debug(...) printf
-#define   cw_info(...) printf
-#define   cw_notice(...) printf
+#define   cw_info(...)  printf
+#define   cw_notice(...)  printf
 #define   cw_warn(...) printf
 #define   cw_error(...) printf
 #define   cw_fatal(...) printf

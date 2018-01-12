@@ -9,3 +9,9 @@ Makefile.Debug
 *.pdb
 *.ilk
 *.rc
+si
+.settings
+android/h5live/bin
+android/h5live/gen
+android/h5live/lib/armeabi-v7a
+armeabi-v7a
