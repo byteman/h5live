@@ -18,39 +18,48 @@ H5liveServer &H5liveServer::get()
     return *sh.get();
 }
 
-bool H5liveServer::start(const std::string webroot, int port)
+int H5liveServer::start(const std::string webroot, int port)
 {
 
     _websrv.registerURI("/websocket", new Poco::Instantiator<WebSocketRequestHandler,Poco::Net::HTTPRequestHandler>());
 
-    return _websrv.start(webroot, port);
+    bool res = _websrv.start(webroot, port);
 
+	return res?0:-1;
 }
 
-bool H5liveServer::push264(const std::string &name,unsigned char *data, int size, long long pts)
+int H5liveServer::push264(const std::string &name,unsigned char *data, int size, long long pts)
 {
     Poco::FastMutex::ScopedLock _lock(_mutex);
     if(_channels.find(name) == _channels.end())
-        return false;
+        return -1;
     _channels[name]->push(data, size, pts);
-    return true;
+    return 0;
 }
 
-void H5liveServer::addStream(const std::string &name)
+int H5liveServer::addStream(const std::string &name)
 {
     Poco::FastMutex::ScopedLock _lock(_mutex);
     if(_channels.find(name) != _channels.end())
-        return ;
-    _channels[name] = new StreamChannel();
-
-    return;
+        return -1;
+	try{
+        _channels[name] = new StreamChannel(name);
+	}
+	catch(Poco::Exception& e)
+	{
+		cw_error("addStream err %s",e.displayText().c_str());
+		return -2;
+	}
+  
+    return 0;
 }
 
-void H5liveServer::removeStream(const std::string &name)
+int H5liveServer::removeStream(const std::string &name)
 {
     Poco::FastMutex::ScopedLock _lock(_mutex);
     if(_channels.find(name) == _channels.end())
-        return;
+        return -1;
     _channels.erase (name);
+	return 0;
 }
 

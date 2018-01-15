@@ -1,7 +1,8 @@
 #include "streamchannel.h"
 #include "Poco/Delegate.h"
 #include "CWWebSocketServer.h"
-StreamChannel::StreamChannel():
+StreamChannel::StreamChannel(const std::string &name):
+    _name(name),
     _activity(this, &StreamChannel::run)
 {
     open();
@@ -53,13 +54,13 @@ void StreamChannel::run()
         FlvTag tag;
         if(_muxer.pop_tag(tag,5000))
         {
-            //printf("send size=%d\n",tag.data.size());
+            //cw_info("send size=%d\n",tag.data.size());
 
-            WebSocketSvrImpl::instance().sendFrame("12345",(const char*)tag.data.data(),tag.data.size());
+            WebSocketSvrImpl::instance().sendFrame(_name,(const char*)tag.data.data(),tag.data.size());
         }
         else
         {
-            printf("timeout\n");
+            cw_warn("timeout\n");
         }
 
      }
@@ -92,7 +93,7 @@ bool StreamChannel::sendFrame(Poco::Net::WebSocket* socket, const char* buffer, 
 }
 void StreamChannel::onWebSocketConnected(const void* pSender,Poco::Net::WebSocket*& socket)
 {
-    printf("websocket connected\n");
+    cw_warn("websocket connected\n");
     std::vector<unsigned char> data;
     if(_muxer.get_header(data))
     {

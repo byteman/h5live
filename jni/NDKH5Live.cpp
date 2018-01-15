@@ -8,8 +8,8 @@ jint NDKH5Live::start(JNIEnv *env, jobject javaThis,jstring webroot, jint port)
 {
 	JavaString jroot(env, webroot);
 	std::string root = jroot.get();
-	bool res = H5liveServer::get().start(root, port);
-	return res==true?0:-1;
+	return H5liveServer::get().start(root, port);
+	
 }
 jint NDKH5Live::push264(JNIEnv *env, jobject javaThis,jstring channel, jbyteArray data)
 {
@@ -20,8 +20,8 @@ jint NDKH5Live::push264(JNIEnv *env, jobject javaThis,jstring channel, jbyteArra
 	h264.set(env, data);
 
 
-	bool res = H5liveServer::get().push264(chan, (unsigned char*)h264.get(), h264.size(), 0);
-	return res==true?0:-1;
+	return H5liveServer::get().push264(chan, (unsigned char*)h264.get(), h264.size(), 0);
+	
 }
 jint NDKH5Live::addStream(JNIEnv *env, jobject javaThis,jstring channel)
 {
@@ -29,8 +29,8 @@ jint NDKH5Live::addStream(JNIEnv *env, jobject javaThis,jstring channel)
 	JavaString jchan(env, channel);
 	std::string chan = jchan.get();
 	
-	H5liveServer::get().addStream(chan);
-	return 0;
+	return H5liveServer::get().addStream(chan);
+	
 
 }
 jint NDKH5Live::removeStream(JNIEnv *env, jobject javaThis,jstring channel)
@@ -39,8 +39,8 @@ jint NDKH5Live::removeStream(JNIEnv *env, jobject javaThis,jstring channel)
 	JavaString jchan(env, channel);
 	std::string chan = jchan.get();
 	
-	H5liveServer::get().removeStream(chan);
-	return 0;
+	return H5liveServer::get().removeStream(chan);
+	
 
 }
 

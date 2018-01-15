@@ -90,6 +90,7 @@ int WebSocketSvrImpl::sendFrame(const std::string& key, const char* buffer, int 
 	if (it != m_wsMaps.end())
 	{
 		std::vector<WebSocket*>* wsVecs = &(it->second);
+        cw_warn("want send = %d",size);
 		for (int i = 0; i < wsVecs->size(); i++)
 		{
 			WebSocket* ws = (*wsVecs)[i];
@@ -101,16 +102,25 @@ int WebSocketSvrImpl::sendFrame(const std::string& key, const char* buffer, int 
 				{
                     int len = ws->sendFrame((char*)buffer + sendLen, size - sendLen,Poco::Net::WebSocket::FRAME_BINARY);
                     if (len < 0)
+                    {
+                        cw_error("send error=%d",len);
 						goto __CLOSEWS;
-
+                    }
 					sendLen += len;
+                    cw_warn("send = %d\n",sendLen);
 					if (sendLen >= size)
 						break;
-                    printf("send = %d\n",sendLen);
+
 				} while (1);
 			}
+            catch(Poco::Exception& e)
+            {
+               cw_error("websocket error = %s",e.displayText().c_str());
+               goto __CLOSEWS;
+            }
 			catch (...)
 			{
+                cw_error("websocket unkown error");
 				goto __CLOSEWS;
 			}
 
@@ -126,7 +136,10 @@ int WebSocketSvrImpl::sendFrame(const std::string& key, const char* buffer, int 
 		for (; it != wsVecs->end();)
 		{
 			if (*it == NULL)
+            {
+                cw_warn("delete websocket");
 				it = wsVecs->erase(it);
+            }
 			else
 				it++;
 		}

@@ -4,10 +4,11 @@
 FlvMuxer::FlvMuxer():
     _flv_encoder(NULL)
 {
-
+#if DEBUG_FILE
     _fos = new Poco::FileOutputStream("test.flv");
-
     //_flv_encoder = new H264FlvEncoder(new StreamWriter(*_fos.get()));
+#endif
+
     _flv_encoder = new H264FlvEncoder(this);
 }
 //找到并区分I帧和其他帧
@@ -76,7 +77,7 @@ int FlvMuxer::write(int type,uint8_t *buf, size_t len)
         {
             //队列太多数据
             _flv_queue.clear();
-            printf("reset queue\n");
+            cw_error("reset queue\n");
         }
         else
         {

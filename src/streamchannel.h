@@ -7,7 +7,7 @@
 class StreamChannel
 {
 public:
-    StreamChannel();
+    StreamChannel(const std::string &name);
     ~StreamChannel();
 
     int push(Poco::UInt8* data, int size,Poco::Int64 pts=0);
@@ -20,7 +20,7 @@ private:
     int open();
     int close();
     FlvMuxer _muxer;
-
+    std::string _name;
     Poco::Activity<StreamChannel> _activity;
 
     bool sendFrame(Poco::Net::WebSocket *socket, const char *buffer, int sz);

@@ -15,3 +15,8 @@ android/h5live/bin
 android/h5live/gen
 android/h5live/lib/armeabi-v7a
 armeabi-v7a
+/android/h5live_as/.gradle
+/android/h5live_as/.idea
+/android/h5live_as/build
+/jni/obj
+/jni/libs

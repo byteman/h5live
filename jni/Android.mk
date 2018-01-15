@@ -7,14 +7,14 @@ include $(CLEAR_VARS)
 LOCAL_MODULE :=PocoNet
 
 
-LOCAL_SRC_FILES := $(LOCAL_PATH)/poco1.8.1/lib/Android/armeabi-v7a/libPocoNet.a
+LOCAL_SRC_FILES := $(LOCAL_PATH)/poco1.8.1/lib/Android/$(TARGET_ARCH_ABI)/libPocoNet.a
 
 
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE :=PocoFoundation
-LOCAL_SRC_FILES := $(LOCAL_PATH)/poco1.8.1/lib/Android/armeabi-v7a/libPocoFoundation.a
+LOCAL_SRC_FILES := $(LOCAL_PATH)/poco1.8.1/lib/Android/$(TARGET_ARCH_ABI)/libPocoFoundation.a
 include $(PREBUILT_STATIC_LIBRARY)
 
 
