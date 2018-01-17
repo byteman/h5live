@@ -43,6 +43,7 @@ int WebSocketSvrImpl::addWebSocket(HTTPServerRequest& request, HTTPServerRespons
     try
     {
         WebSocket* ws = new WebSocket(request, response);
+        ws->setSendBufferSize(1000000);
         //Poco::Timespan sendTimeOut(300);
        // ws->setSendTimeout(sendTimeOut);
         Poco::FastMutex::ScopedLock lock(m_mutex);
@@ -84,17 +85,19 @@ int WebSocketSvrImpl::addWebSocket(HTTPServerRequest& request, HTTPServerRespons
 }
 int WebSocketSvrImpl::sendFrame(const std::string& key, const char* buffer, int size)
 {
-	Poco::FastMutex::ScopedLock lock(_WebSendMutex, 500);
+	//Poco::FastMutex::ScopedLock lock(_WebSendMutex, 500);
+		Poco::Timestamp ts;
+	Poco::FastMutex::ScopedLock lock(m_mutex);
 
     std::map< std::string, std::vector<WebSocket*> >::iterator it = m_wsMaps.find(key);
 	if (it != m_wsMaps.end())
 	{
 		std::vector<WebSocket*>* wsVecs = &(it->second);
-        cw_warn("want send[%s] = %d to %d",key.c_str(),size,wsVecs->size());
+        cw_warn("websocket channel[%s] = send[%d] to [%d]client",key.c_str(),size,wsVecs->size());
 		for (int i = 0; i < wsVecs->size(); i++)
 		{
 			WebSocket* ws = (*wsVecs)[i];
-			cw_error("ws=%s",ws->getBlocking()?"block":"nonblock");
+			//cw_error("ws=%s",ws->getBlocking()?"block":"nonblock");
 
 			try{
                 int len = ws->sendFrame((char*)buffer, size,Poco::Net::WebSocket::FRAME_BINARY);
@@ -104,7 +107,7 @@ int WebSocketSvrImpl::sendFrame(const std::string& key, const char* buffer, int 
 					goto __CLOSEWS;
                 }
 				
-                cw_warn("send = %d\n",len);
+                //cw_warn("send = %d\n",len);
 				
 			}
 			catch(Poco::Exception& e)
@@ -123,18 +126,16 @@ int WebSocketSvrImpl::sendFrame(const std::string& key, const char* buffer, int 
 
 			__CLOSEWS:
 				(*wsVecs)[i] = NULL;
-				cw_error("%d",__LINE__);
 				delete ws, ws = NULL;
-				cw_error("%d",__LINE__);
 		}
   
 		//Poco::FastMutex::ScopedLock lock(m_mutex);
-		cw_error("%d",__LINE__);
+	
 		std::vector<WebSocket*>::iterator it = wsVecs->begin();
-		cw_error("%d",__LINE__);
+	
 		for (; it != wsVecs->end();)
 		{
-			cw_error("%d",__LINE__);
+
 			if (*it == NULL)
             {
                 cw_warn("delete websocket");
@@ -142,13 +143,13 @@ int WebSocketSvrImpl::sendFrame(const std::string& key, const char* buffer, int 
             }
 			else
 			{
-				cw_error("%d",__LINE__);
 				it++;
 			}
 		}
-		cw_error("%d",__LINE__);
 	}
-
+    //大概发送一次会消耗1-2ms
+    //Poco::Thread::sleep(10);
+    //cw_warn("send elesped %lldms",ts.elapsed());
 	return 0;
 }
 WebSocketSvrImpl& WebSocketSvrImpl::instance()

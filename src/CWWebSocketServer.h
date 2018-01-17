@@ -50,7 +50,7 @@ public:
 private:
 	bool						m_isRunning;
 	Poco::FastMutex				m_mutex;
-	Poco::FastMutex				_WebSendMutex;
+	//Poco::FastMutex				_WebSendMutex;
     std::map< std::string, std::vector<WebSocket*> >		m_wsMaps;
 };
 
