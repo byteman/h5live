@@ -140,14 +140,51 @@ public class AvcEncoder
 								byte[] outData = new byte[bufferInfo.size];
 								outputBuffer.get(outData);
 								if(bufferInfo.flags == 2){
-									byte[] pps = new byte[21];
-									byte[] sps = new byte[8];
-									//configbyte = outData;
 
-									System.arraycopy(outData, 0, pps, 0, 21);
-									System.arraycopy(outData, 21, sps, 0, 8);
-									h5live.getInstance().H5livePush("12345", pps);
-									h5live.getInstance().H5livePush("12345", sps);
+                                    int pps_i = 0;
+                                    int sps_i = 0;
+                                    for(int i = 0 ; i < outData.length; i++)
+                                    {
+                                        if( (i + 4 ) >= outData.length)
+                                            break;
+                                        if( (outData[i]==0) && (outData[i+1]==0) && (outData[i+2]==0) && (outData[i+3]==1) )
+                                        {
+
+                                            byte naltype = (byte) (outData[i+4]&0x1F);
+
+                                            if(naltype == 8)
+                                            {
+                                                sps_i = i;
+                                                break;
+                                            }
+
+                                            else if(naltype == 7)
+                                            {
+                                                pps_i = i;
+                                            }
+                                        }
+
+
+                                    }
+
+
+                                        int pps_size = sps_i - pps_i;
+                                        int sps_size = outData.length - sps_i;
+                                        byte[] pps = new byte[pps_size];
+                                        byte[] sps = new byte[sps_size];
+                                        //configbyte = outData;
+                                        if(pps_size > 0 &&  sps_size > 0)
+                                        {
+                                            System.arraycopy(outData, pps_i, pps, 0, pps_size);
+                                            System.arraycopy(outData, sps_i, sps, 0, sps_size);
+                                            h5live.getInstance().H5livePush("12345", pps);
+                                            h5live.getInstance().H5livePush("12345", sps);
+                                        }
+                                        else
+                                        {
+                                            Log.e("h5live", "invalid pps sps");
+                                        }
+
 //									outputStream.write(pps, 0, pps.length);
 //									outputStream.write(sps, 0, sps.length);
 								}else if(bufferInfo.flags == 1){
