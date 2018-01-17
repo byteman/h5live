@@ -1,6 +1,8 @@
 #include "streamchannel.h"
 #include "Poco/Delegate.h"
 #include "CWWebSocketServer.h"
+#include "Poco/Timestamp.h"
+
 StreamChannel::StreamChannel(const std::string &name):
     _name(name),
     _activity(this, &StreamChannel::run)
@@ -35,7 +37,14 @@ int StreamChannel::close()
 
 int StreamChannel::push(Poco::UInt8 *data, int size,Poco::Int64 pts)
 {
-    _muxer.push_h264(data, size,pts);
+	Poco::Timestamp ts;
+
+	Poco::Int64 _ts = pts;
+	if(_ts == 0)
+	{
+		_ts = 	ts.epochMicroseconds() /1000;
+	}
+    _muxer.push_h264(data, size, _ts);
 
     return 0;
 }

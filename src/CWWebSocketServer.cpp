@@ -43,8 +43,8 @@ int WebSocketSvrImpl::addWebSocket(HTTPServerRequest& request, HTTPServerRespons
     try
     {
         WebSocket* ws = new WebSocket(request, response);
-        Poco::Timespan sendTimeOut(300);
-        ws->setSendTimeout(sendTimeOut);
+        //Poco::Timespan sendTimeOut(300);
+       // ws->setSendTimeout(sendTimeOut);
         Poco::FastMutex::ScopedLock lock(m_mutex);
         std::map< std::string, std::vector<WebSocket*> >::iterator it = m_wsMaps.find(cameraid);
         if(it != m_wsMaps.end())
@@ -90,59 +90,63 @@ int WebSocketSvrImpl::sendFrame(const std::string& key, const char* buffer, int 
 	if (it != m_wsMaps.end())
 	{
 		std::vector<WebSocket*>* wsVecs = &(it->second);
-        cw_warn("want send = %d",size);
+        cw_warn("want send[%s] = %d to %d",key.c_str(),size,wsVecs->size());
 		for (int i = 0; i < wsVecs->size(); i++)
 		{
 			WebSocket* ws = (*wsVecs)[i];
-			try
-			{
+			cw_error("ws=%s",ws->getBlocking()?"block":"nonblock");
 
-				int sendLen = 0;
-				do
-				{
-                    int len = ws->sendFrame((char*)buffer + sendLen, size - sendLen,Poco::Net::WebSocket::FRAME_BINARY);
-                    if (len < 0)
-                    {
-                        cw_error("send error=%d",len);
-						goto __CLOSEWS;
-                    }
-					sendLen += len;
-                    cw_warn("send = %d\n",sendLen);
-					if (sendLen >= size)
-						break;
-
-				} while (1);
+			try{
+                int len = ws->sendFrame((char*)buffer, size,Poco::Net::WebSocket::FRAME_BINARY);
+                if (len < 0)
+                {
+                    cw_error("send error=%d",len);
+					goto __CLOSEWS;
+                }
+				
+                cw_warn("send = %d\n",len);
+				
 			}
-            catch(Poco::Exception& e)
+			catch(Poco::Exception& e)
             {
                cw_error("websocket error = %s",e.displayText().c_str());
-               goto __CLOSEWS;
+			   goto __CLOSEWS;
             }
 			catch (...)
 			{
                 cw_error("websocket unkown error");
-				goto __CLOSEWS;
+				
+				
 			}
 
 			continue;
 
-		__CLOSEWS:
-			(*wsVecs)[i] = NULL;
-			delete ws, ws = NULL;
+			__CLOSEWS:
+				(*wsVecs)[i] = NULL;
+				cw_error("%d",__LINE__);
+				delete ws, ws = NULL;
+				cw_error("%d",__LINE__);
 		}
-
-		Poco::FastMutex::ScopedLock lock(m_mutex);
+  
+		//Poco::FastMutex::ScopedLock lock(m_mutex);
+		cw_error("%d",__LINE__);
 		std::vector<WebSocket*>::iterator it = wsVecs->begin();
+		cw_error("%d",__LINE__);
 		for (; it != wsVecs->end();)
 		{
+			cw_error("%d",__LINE__);
 			if (*it == NULL)
             {
                 cw_warn("delete websocket");
 				it = wsVecs->erase(it);
             }
 			else
+			{
+				cw_error("%d",__LINE__);
 				it++;
+			}
 		}
+		cw_error("%d",__LINE__);
 	}
 
 	return 0;
