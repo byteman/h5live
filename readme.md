@@ -33,6 +33,18 @@
 
 ## android
 
+h5live提供了一个android jni的库和对应的java接口类，可以直接用于android嵌入式设备嵌入一个流媒体服务器.
+
+### 编译步骤
+    
+#### jni编译步骤   
+    编译前需要先安装ndk
+    cd jni
+    ./build.bat
+
+#### android demo的工程
+    demo工程在android/h5live_as目录下
+           
 # 目前存在的问题
 
 ## ie浏览器从连接到视频首开需要2-3秒
