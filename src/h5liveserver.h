@@ -2,8 +2,10 @@
 #define H5LIVESERVER_H
 
 #include <string>
+#include "streamchannel.h"
 
-class H5liveServer
+
+class H5LIVESERVER_API H5liveServer
 {
 public:
     H5liveServer();

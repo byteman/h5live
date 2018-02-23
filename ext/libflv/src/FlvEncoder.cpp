@@ -89,37 +89,46 @@ int H264FlvEncoder::write_video(uint8_t *data, size_t len, int64_t pts, int64_t 
 {
 	int rc = 0;
 	uint8_t *p = data;
-	uint8_t *q = NULL;
-	unsigned int n = 0;
+	uint8_t *lastp = data;
+	//uint8_t *q = NULL;
+	unsigned int lastpos = 0;
 	unsigned int count = 0;
 
 	if(len<5) return 0; //invalid data: 00 00 00 01 
 
-    write_nalu(data,len,pts,dts);
-//    for(unsigned int i=0; i<len-4; i++)
-//    {
-//        if(p[i]==0x0 && p[i+1]==0x0 && p[i+2]==0x0 && p[i+3]==0x01)
-//        {
-//            if(q==NULL) q = p + i;  //in case the 1st tag is not at the begining of data
-//            if(n>0)
-//            {
-//                rc = write_nalu(q, n, pts, dts);
-//                if(rc<0) return rc;
-//                count += rc;
-//            }
-//            q += n;
-//            n = 0;
-//        }else if(i==len-5 && q!=NULL){ //the last piece
-//            rc = write_nalu(q, n+4, pts, dts);
-//            if(rc<0) return rc;
-//            count += rc;
-//            break;
-//        }
-//        if(q!=NULL) n++;
-//    }
+	//write_nalu(data,len,pts,dts);
+	for (unsigned int i = 0; i < len; i++)
+	{
+		if ((p[i] == 0x0 && p[i + 1] == 0x0 && p[i + 2] == 0x0 && p[i + 3] == 0x01)/* ||
+			(p[i] == 0x0 && p[i + 1] == 0x0 && p[i + 2] == 0x01)*/)
+		{
+			if (lastpos != i)
+			{
+				int size = i - lastpos;
+				rc = write_nalu(p + lastpos, size, pts, dts);
+				if (rc < 0)
+					return rc;
+				count += rc;
 
-	return count;
+				lastpos = i;
+			}
+		}
+		else
+		{
+			if (i > len - 5)//the last piece
+			{
+				rc = write_nalu(p + lastpos, len - lastpos, pts, dts);
+				if (rc < 0)
+					return rc;
+				count += rc;
+				break;
+			}
+		}
+	}
+
+ 	return count;
 }
+
 int H264FlvEncoder::write_nalu(uint8_t *data, size_t len, int64_t pts, int64_t dts)
 {
 	uint8_t *p = data;
@@ -128,7 +137,7 @@ int H264FlvEncoder::write_nalu(uint8_t *data, size_t len, int64_t pts, int64_t d
 
 	if(this->m_bSentParameters && (type == 0x06 || type==0x07 || type==0x08))
 	{
-		printf("Duplicate SPS/PPS\n");
+		//printf("Duplicate SPS/PPS\n");
 		return 0;
 	}
 
@@ -143,13 +152,13 @@ int H264FlvEncoder::write_nalu(uint8_t *data, size_t len, int64_t pts, int64_t d
 	case 0x05: //IDR
 		return write_frame(data, len, pts, dts, true);
 
-	case 0x06: //SEI
-		if(m_pSEI!=NULL) { free(m_pSEI); m_pSEI=NULL; }
-		if(m_pSEI==NULL) m_pSEI = (uint8_t*)malloc(len);
-		if(m_pSEI==NULL) return -1;
-		memcpy(m_pSEI, data, len);
-		m_uiSEILen = len;
-		break;
+	//case 0x06: //SEI
+	//	if(m_pSEI!=NULL) { free(m_pSEI); m_pSEI=NULL; }
+	//	if(m_pSEI==NULL) m_pSEI = (uint8_t*)malloc(len);
+	//	if(m_pSEI==NULL) return -1;
+	//	memcpy(m_pSEI, data, len);
+	//	m_uiSEILen = len;
+	//	break;
 
 	case 0x07: //SPS
 		if(m_pSPS!=NULL) { free(m_pSPS); m_pSPS=NULL; }
@@ -166,6 +175,12 @@ int H264FlvEncoder::write_nalu(uint8_t *data, size_t len, int64_t pts, int64_t d
 		memcpy(m_pPPS, p, len-4);
 		m_uiPPSLen = len-4;
 		return write_sps_pps();
+
+	case 0x06: //SEI
+	case  0x9:
+		return 0;
+	default:
+		return 0;
 	}
 
 	return -1;

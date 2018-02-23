@@ -4,7 +4,18 @@
 #include "CWHttpServer.h"
 #include "Poco/Activity.h"
 #include "Poco/Net/WebSocket.h"
-class StreamChannel
+
+#ifdef _WIN32
+#ifdef H5LIVESERVER_EXPORTS
+#define H5LIVESERVER_API __declspec(dllexport)
+#else
+#define H5LIVESERVER_API
+#endif
+#else
+#define H5LIVESERVER_API
+#endif
+
+class H5LIVESERVER_API StreamChannel
 {
 public:
     StreamChannel(const std::string &name);
