@@ -27,6 +27,7 @@ private:
 	static jint push264(JNIEnv *env, jobject javaThis,jstring channel, jbyteArray data);
 	static jint addStream(JNIEnv *env, jobject javaThis,jstring channel);
 	static jint removeStream(JNIEnv *env, jobject javaThis,jstring channel);
+	static jint getClientNum(JNIEnv *env, jobject javaThis,jstring channel);
 	static   jint stop(JNIEnv *env, jobject javaThis);
 };
 

@@ -40,7 +40,7 @@ public class AvcEncoder
 	    MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", width, height);
 	    mediaFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar);    
 	    mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, width*height*3);
-	    mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
+	    mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 15);
 	    mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 5);
 		try {
 			mediaCodec = MediaCodec.createEncoderByType("video/avc");
@@ -109,7 +109,7 @@ public class AvcEncoder
 				byte[] input = null;
 				long pts =  0;
 				long generateIndex = 0;
-
+				long endMs = System.currentTimeMillis();
 				while (isRuning) {
 					if (MainActivity.YUVQueue.size() >0){
 						input = MainActivity.YUVQueue.poll();
@@ -119,7 +119,9 @@ public class AvcEncoder
 					}
 					if (input != null) {
 						try {
-							long startMs = System.currentTimeMillis();
+							//long startMs = System.currentTimeMillis();
+							//Log.e("h5live",""+(startMs - endMs)+"ms");
+							//endMs = startMs;
 							ByteBuffer[] inputBuffers = mediaCodec.getInputBuffers();
 							ByteBuffer[] outputBuffers = mediaCodec.getOutputBuffers();
 							int inputBufferIndex = mediaCodec.dequeueInputBuffer(-1);
@@ -188,10 +190,7 @@ public class AvcEncoder
 //									outputStream.write(pps, 0, pps.length);
 //									outputStream.write(sps, 0, sps.length);
 								}else if(bufferInfo.flags == 1){
-//									byte[] keyframe = new byte[bufferInfo.size + configbyte.length];
-//									System.arraycopy(configbyte, 0, keyframe, 0, configbyte.length);
-//									System.arraycopy(outData, 0, keyframe, configbyte.length, outData.length);
-//
+
 									//outputStream.write(outData, 0, outData.length);
 									h5live.getInstance().H5livePush("12345", outData);
 								}else{

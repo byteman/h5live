@@ -83,6 +83,19 @@ int WebSocketSvrImpl::addWebSocket(HTTPServerRequest& request, HTTPServerRespons
     }
     return 0;
 }
+int WebSocketSvrImpl::getClientNum(const std::string& key)
+{
+	Poco::FastMutex::ScopedLock lock(m_mutex);
+	std::map< std::string, std::vector<WebSocket*> >::iterator it = m_wsMaps.find(key);
+	if (it != m_wsMaps.end())
+	{
+		std::vector<WebSocket*>* wsVecs = &(it->second);
+        return wsVecs->size();
+
+	}
+	return 0;
+}
+
 int WebSocketSvrImpl::sendFrame(const std::string& key, const char* buffer, int size)
 {
 	//Poco::FastMutex::ScopedLock lock(_WebSendMutex, 500);

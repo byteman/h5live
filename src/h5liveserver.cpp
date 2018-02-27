@@ -17,6 +17,10 @@ H5liveServer &H5liveServer::get()
     static Poco::SingletonHolder<H5liveServer> sh;
     return *sh.get();
 }
+int H5liveServer::getClientNum(const std::string& name)
+{
+	return WebSocketSvrImpl::instance().getClientNum(name);
+}
 
 int H5liveServer::start(const std::string webroot, int port)
 {

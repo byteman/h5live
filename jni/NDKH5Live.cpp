@@ -43,6 +43,16 @@ jint NDKH5Live::removeStream(JNIEnv *env, jobject javaThis,jstring channel)
 	
 
 }
+jint NDKH5Live::getClientNum(JNIEnv *env, jobject javaThis,jstring channel)
+{
+	
+	JavaString jchan(env, channel);
+	std::string chan = jchan.get();
+	
+	return H5liveServer::get().getClientNum(chan);
+	
+
+}
 
 jint NDKH5Live::stop(JNIEnv *env, jobject javaThis)
 {
@@ -61,6 +71,7 @@ void NDKH5Live::initialize(JNIEnv *env)
 	addNativeMethod("H5livePush", (void*)&push264, kTypeInt,kTypeString,kTypeArray(kTypeByte),NULL);
 	addNativeMethod("H5liveAddStream", (void*)&addStream, kTypeInt, kTypeString, NULL);
 	addNativeMethod("H5liveRemoveStream", (void*)&removeStream, kTypeInt, kTypeString, NULL);
+	addNativeMethod("H5liveGetClientNum", (void*)&getClientNum, kTypeInt, kTypeString, NULL);
 
 	registerNativeMethods(env);
 }

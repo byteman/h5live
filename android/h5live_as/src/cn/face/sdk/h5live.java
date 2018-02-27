@@ -23,5 +23,6 @@ public class h5live {
 	static public native int H5liveStop();
 	static public native int H5liveAddStream(String channel);
 	static public native int H5liveRemoveStream(String channel);
+	static public native int H5liveGetClientNum(String channel);
 
 }

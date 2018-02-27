@@ -59,8 +59,9 @@ void StreamChannel::run()
 
      while (!_activity.isStopped())
      {
-//        Poco::Thread::sleep(1000);
+
         FlvTag tag;
+        cw_info("stream run\n");
         if(_muxer.pop_tag(tag,5000))
         {
             //cw_info("send size=%d\n",tag.data.size());
@@ -69,7 +70,7 @@ void StreamChannel::run()
         }
         else
         {
-            cw_warn("timeout\n");
+            cw_warn("5s Timeout:StremChannel is empty\n");
         }
 
      }

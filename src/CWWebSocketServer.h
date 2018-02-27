@@ -44,7 +44,8 @@ public:
     int addWebSocket(HTTPServerRequest& request, HTTPServerResponse& response);
 
     int sendFrame(const std::string& key, const char* buffer, int size);
-
+	
+	int getClientNum(const std::string& key);
     static WebSocketSvrImpl& instance();
     Poco::BasicEvent<WebSocket*> onConnect;
 private:

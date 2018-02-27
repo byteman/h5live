@@ -14,6 +14,7 @@ public:
     int push264(const std::string &name, unsigned char* data, int size,long long pts=0);
     int addStream(const std::string &name);
     int removeStream(const std::string &name);
+	int getClientNum(const std::string& name);
 private:
 
 

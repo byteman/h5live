@@ -53,3 +53,4 @@ h5live提供了一个android jni的库和对应的java接口类，可以直接�
 ## 有些版本的chrome浏览器在切换tab，或者切换窗口焦点后，视频会卡住不解码播放，但是视频数据还是在接收
 	解决方案: player.currentTime = player.buffered.end(0)-0.01; 把当前时间设置为buffer数据中最后的时间附近，定时更新时间到最后
 ## chrome61.0.3159.5不存在
+

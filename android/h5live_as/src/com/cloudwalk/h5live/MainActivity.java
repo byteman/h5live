@@ -92,7 +92,11 @@ public class MainActivity extends Activity  implements SurfaceHolder.Callback,Pr
 		// TODO Auto-generated method stub
 		putYUVData(data,data.length);
 	}
-	
+    protected void onDestroy() {
+        super.onDestroy();
+        // 结束Activity&从栈中移除该Activity
+        this.finish();
+    }
 	public void putYUVData(byte[] buffer, int length) {
 		if (YUVQueue.size() >= 10) {
 			YUVQueue.poll();
