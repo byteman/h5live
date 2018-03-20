@@ -26,7 +26,16 @@ using Poco::Net::HTTPServerResponse;
 using Poco::Net::HTTPServerParams;
 using Poco::Net::MessageHeader;
 class CWRequestHandlerFactory;
-class CWHttpServer
+#ifdef _WIN32
+#ifdef H5LIVESERVER_EXPORTS
+#define HTTP_SERVER_API __declspec(dllexport)
+#else
+#define HTTP_SERVER_API
+#endif
+#else
+#define HTTP_SERVER_API
+#endif
+class HTTP_SERVER_API CWHttpServer
 {
 public:
 	CWHttpServer(void);
