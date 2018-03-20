@@ -44,8 +44,8 @@ int WebSocketSvrImpl::addWebSocket(HTTPServerRequest& request, HTTPServerRespons
     {
         WebSocket* ws = new WebSocket(request, response);
         ws->setSendBufferSize(1000000);
-        //Poco::Timespan sendTimeOut(300);
-       // ws->setSendTimeout(sendTimeOut);
+        Poco::Timespan sendTimeOut(50000);
+        ws->setSendTimeout(sendTimeOut);
         Poco::FastMutex::ScopedLock lock(m_mutex);
         std::map< std::string, std::vector<WebSocket*> >::iterator it = m_wsMaps.find(cameraid);
         if(it != m_wsMaps.end())
@@ -99,8 +99,8 @@ int WebSocketSvrImpl::getClientNum(const std::string& key)
 int WebSocketSvrImpl::sendFrame(const std::string& key, const char* buffer, int size)
 {
 	//Poco::FastMutex::ScopedLock lock(_WebSendMutex, 500);
-		Poco::Timestamp ts;
-	Poco::FastMutex::ScopedLock lock(m_mutex);
+    //	Poco::Timestamp ts;
+    //Poco::FastMutex::ScopedLock lock(m_mutex);
 
     std::map< std::string, std::vector<WebSocket*> >::iterator it = m_wsMaps.find(key);
 	if (it != m_wsMaps.end())
@@ -110,7 +110,7 @@ int WebSocketSvrImpl::sendFrame(const std::string& key, const char* buffer, int 
 		for (int i = 0; i < wsVecs->size(); i++)
 		{
 			WebSocket* ws = (*wsVecs)[i];
-			//cw_error("ws=%s",ws->getBlocking()?"block":"nonblock");
+            cw_error("ws=%d",i);
 
 			try{
                 int len = ws->sendFrame((char*)buffer, size,Poco::Net::WebSocket::FRAME_BINARY);
@@ -119,7 +119,7 @@ int WebSocketSvrImpl::sendFrame(const std::string& key, const char* buffer, int 
                     cw_error("send error=%d",len);
 					goto __CLOSEWS;
                 }
-				
+                cw_error("ws=%d send=%d",i,len);
                 //cw_warn("send = %d\n",len);
 				
 			}
@@ -131,7 +131,7 @@ int WebSocketSvrImpl::sendFrame(const std::string& key, const char* buffer, int 
 			catch (...)
 			{
                 cw_error("websocket unkown error");
-				
+                goto __CLOSEWS;
 				
 			}
 
@@ -141,7 +141,8 @@ int WebSocketSvrImpl::sendFrame(const std::string& key, const char* buffer, int 
 				(*wsVecs)[i] = NULL;
 				delete ws, ws = NULL;
 		}
-  
+
+        cw_error("ws send ok");
 		//Poco::FastMutex::ScopedLock lock(m_mutex);
 	
 		std::vector<WebSocket*>::iterator it = wsVecs->begin();

@@ -64,9 +64,10 @@ void StreamChannel::run()
         cw_info("stream run\n");
         if(_muxer.pop_tag(tag,5000))
         {
-            //cw_info("send size=%d\n",tag.data.size());
+            cw_info("1.send size=%d\n",tag.data.size());
 
             WebSocketSvrImpl::instance().sendFrame(_name,(const char*)tag.data.data(),tag.data.size());
+            cw_info("2.send size=%d\n",tag.data.size());
         }
         else
         {

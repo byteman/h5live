@@ -91,7 +91,9 @@ public class MainActivity extends Activity  implements SurfaceHolder.Callback,Pr
 	public void onPreviewFrame(byte[] data, android.hardware.Camera camera) {
 		// TODO Auto-generated method stub
 		putYUVData(data,data.length);
-	}
+
+
+    }
     protected void onDestroy() {
         super.onDestroy();
         // 结束Activity&从栈中移除该Activity
