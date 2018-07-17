@@ -20,3 +20,6 @@ armeabi-v7a
 /android/h5live_as/build
 /jni/obj
 /jni/libs
+src
+obj/
+.idea

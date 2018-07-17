@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "CWLogger.h"
 #include "CWWebSocketServer.h"
+#include "Poco/URI.h"
 CWRequestHandlerFactory::CWRequestHandlerFactory()
 {
 
@@ -23,7 +24,8 @@ HTTPRequestHandler* CWRequestHandlerFactory::createRequestHandler(const HTTPServ
     {
         url = "/websocket";
     }
-
+    Poco::URI x(url);
+    url = x.getPath();
     if(uriRoute.find (url) != uriRoute.end ())
     {
         //已经注册了的http路由

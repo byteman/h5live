@@ -31,9 +31,9 @@ public class MainActivity extends Activity  implements SurfaceHolder.Callback,Pr
 	
     private Parameters parameters;
     
-    int width = 1280;
+    int width = 1920;
     
-    int height = 720;
+    int height = 1080;
     
     int framerate = 30;
 
